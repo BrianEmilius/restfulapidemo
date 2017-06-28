@@ -20,5 +20,5 @@ require(path.join(__dirname, 'routes', 'index'))(server);
 
 // LISTEN AND BEGIN
 server.listen(port, function(){
-	console.info('%s is listening on %s', server.name, server.url);
+	console.info('%s is listening on %s', server.name, port);
 });
