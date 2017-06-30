@@ -65,5 +65,6 @@ class User {
 
 module.exports = User;
 
+// GARBAGE COLLECTION
 delete mysql;
 delete db;

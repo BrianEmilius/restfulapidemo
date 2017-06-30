@@ -42,4 +42,5 @@ module.exports = function(app) {
 
 };
 
+// GARBAGE COLLECTION
 delete User;

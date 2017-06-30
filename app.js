@@ -1,6 +1,5 @@
 // DEPENDENCIES
 const restify = require('restify');
-const logger  = require('morgan');
 
 // uh, "not" variables?
 const port = process.env.PORT || 1337;
@@ -24,3 +23,8 @@ require('./routes/index')(app);
 app.listen(port, function() {
     console.log('%s is listening on port %s', app.name, port);
 });
+
+// GARBAGE COLLECTION
+delete restify;
+delete port;
+delete app;
