@@ -1,56 +1,69 @@
-const path = require('path');
-const mysql = require(path.join(__dirname, '..', 'config', 'mysql'));
-const db = mysql.connect();
+const mysql = require('../config/mysql');
+const db    = mysql.connect();
 
 /**
  * Handles users
- * @class
+ * @class User
  */
 class User {
-	/**
-	 * Find a single user and send user object to callback function
-	 * @param {number} id the id of a user
-	 * @param {findOneCallback} next the callback function that handles the result
-	 */
-	findOne(id, next) {
-		try {
-			db.execute('SELECT id, username FROM users WHERE id = ? LIMIT 1', [id], function(err, row) {
-				if (err) throw new Error('SQL error');
-				next(null, row[0]);
-			});
-		}
-		catch(err) {
-			next(err);
-		}
-	}
-	/**
-	 * Callback function that handles the result of findOne()
-	 * @callback findOneCallback
-	 * @param {object} err either null or an error object
-	 * @param {object} row a json object containing user information
-	 */
+    /**
+     * Creates an instance of User.
+     * @param {string} [username] the unique username of a user
+     * @param {object} [values] JSON or jsx formatted object containing the user values with which to handle a query
+     * @memberof User
+     */
+    constructor(username, values) {
+        if (typeof username === "string") {
+            this.username = username;
+        }
+        if (typeof values === "object") {
+            this.values = values;
+        }
+    }
+    
+    /**
+     * Create a user in the database.
+     * @memberof User
+     */
+    create() {
+        let values = this.values;
+        return new Promise(function(resolve, reject) {
+            db.execute('INSERT INTO users SET username = ?, email = ?, password = ?', [values.username, values.email, values.password], function(err, row) {
+                if (err) reject(err);
+                resolve(row);
+            });
+        });
+    }
 
-	/**
-	 * Find all users and send the user object to callback function
-	 * @param {findAllCallback} next the callback function that handles the result
-	 */
-	findAll(next) {
-		try {
-			db.execute('SELECT id, username FROM users', [], function(err, rows) {
-				if (err) throw new Error('SQL error');
-				next(null, rows);
-			});
-		}
-		catch(err) {
-			next(err);
-		}
-	}
-	/**
-	 * Callback function that handles the result of findAll()
-	 * @callback findAllCallback
-	 * @param {object} err either null or an error object
-	 * @param {object} rows a json object containing user information
-	 */
+    /**
+     * Get all users from the database.
+     * @memberof User
+     */
+    getAll() {
+        return new Promise(function(resolve, reject) {
+            db.execute('SELECT id, username, email, password FROM users', function(err, rows) {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+    }
+
+    /**
+     * Get one user from the database.
+     * @memberof User
+     */
+    getOne() {
+        let username = this.username;
+        return new Promise(function(resolve, reject) {
+            db.execute('SELECT id, username, email, password FROM users WHERE username = ?', [username], function(err, row) {
+                if (err) reject(err);
+                resolve(row);
+            });
+        });
+    }
 }
 
 module.exports = User;
+
+delete mysql;
+delete db;

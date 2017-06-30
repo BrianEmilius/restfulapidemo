@@ -1,20 +1,45 @@
-const path = require('path');
-const User = require(__dirname, '..', 'services', 'users');
+const User = require('../services/users');
 
-module.exports = function(server) {
-	server.get('/users', function(req, res, next) {
-		let user = new User();
-		user.findAll(function(err, results) {
-			if (err) console.error(err);
-			res.send(results);
-		});
-	});
-	
-	server.get('/users/:id', function(req, res, next) {
-		let user = new User();
-		user.findOne(req.params.id, function(err, result) {
-			if (err) console.error(err);
-			res.send(result);
-		});
-	});
+module.exports = function(app) {
+    
+    app.post('/users', function(req, res, next) {
+        let user = new User(req.params.username, req.params);
+        user.create()
+            .then(function(result) {
+                req.params.id = result.insertId;
+                res.send(201, req.params);
+            })
+            .catch(function(err) {
+                res.send(400, {"code": "BadRequest", "message": err.message});
+            });
+        delete user;
+    });
+
+    app.get('/users', function(req, res, next) {
+        let user = new User();
+        user.getAll()
+            .then(function(result) {
+                res.send(200, result);
+            })
+            .catch(function(err) {
+                console.error(err.message);
+                res.send(404, {"code": "NotFound", "message": err.message});
+            });
+        delete user;
+    });
+
+    app.get('/users/:username', function(req, res, next) {
+        let user = new User(req.params.username);
+        user.getOne()
+            .then(function(result) {
+                res.send(result);
+            })
+            .catch(function(err) {
+                res.send(404, {"code": "NotFound", "message": err.message});
+            });
+        delete user;
+    });
+
 };
+
+delete User;

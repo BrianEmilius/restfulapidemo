@@ -1,5 +1,6 @@
 const path = require('path');
 
-module.exports = function(server) {
-    require(path.join(__dirname, 'users'))(server);
+module.exports = function(app) {
+    require(path.join(__dirname, 'users'))(app);
+    //require(path.join(__dirname, 'articles'))(app);
 };

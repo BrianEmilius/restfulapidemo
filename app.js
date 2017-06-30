@@ -1,24 +1,26 @@
+// DEPENDENCIES
 const restify = require('restify');
 const logger  = require('morgan');
-const path    = require('path');
-const port    = process.env.PORT || 8080;
 
-// SERVER DEFINITION
-const server = restify.createServer({
-	name: 'RESTful API Demo',
-	version: '1.0.0'
+// uh, "not" variables?
+const port = process.env.PORT || 1337;
+
+// SERVER INITIALIZATION
+const app = restify.createServer({
+    name: 'RESTful API Demo',
+    version: '0.0.1'
 });
 
-// SERVER CONFIG
-server.use(restify.plugins.acceptParser(server.acceptable))
-	  .use(restify.plugins.queryParser())
-	  .use(restify.plugins.bodyParser())
-	  .use(logger('dev'));
+// CONFIGURATION
+require('./config/server')(app);
+
+// HELPERS / MIDDLEWARE
+require('./helpers/redirect')(app);
 
 // ROUTES
-require(path.join(__dirname, 'routes', 'index'))(server);
+require('./routes/index')(app);
 
 // LISTEN AND BEGIN
-server.listen(port, function(){
-	console.info('%s is listening on %s', server.name, port);
+app.listen(port, function() {
+    console.log('%s is listening on port %s', app.name, port);
 });
