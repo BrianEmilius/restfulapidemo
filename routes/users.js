@@ -28,8 +28,8 @@ module.exports = app => {
         delete user;
     });
 
-    app.get('/users/:userId', (req, res, next) => {
-        let user = new User(req.params.userId);
+    app.get('/users/:username', (req, res, next) => {
+        let user = new User(req.params.username);
         user.get()
             .then(result => {
                 res.send(200, result);
@@ -40,15 +40,26 @@ module.exports = app => {
         delete user;
     });
 
-    app.put('/users/:userId', (req, res, next) => {
-        let user = new User(req.params.userId);
-        user.put(req.body)
+    app.patch('/users/:username', (req, res, next) => {
+        let user = new User(req.params.username);
+        user.patch(req.body)
             .then(result => {
                 res.send(200, result);
             })
             .catch(err => {
                 res.send(400, {"code": "BadRequest", "message": err.message});
             });
+    });
+
+    app.del('/users/:username', (req, res, next) => {
+        let user = new User(req.params.username);
+        user.delete()
+            .then(result => {
+                res.send(200, result);
+            })
+            .catch(err => {
+                res.send(400, {"code": "BadRequest", "message": err.message});
+            })
     });
 
 };

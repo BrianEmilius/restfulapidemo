@@ -22,10 +22,10 @@ class User {
      * @memberof User
      */
     post(values) {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             if (typeof values === 'object') {
                 this.values = values;
-                db.execute('INSERT INTO users SET username = ?, email = ?, password = ?', [values.username, values.email, values.password], function(err, row) {
+                db.execute('INSERT INTO users SET username = ?, email = ?, password = ?', [values.username, values.email, values.password], (err, row) => {
                     if (err) reject(err);
                     resolve(row);
                 });
@@ -43,16 +43,16 @@ class User {
     get() {
         if (typeof this.username === 'string') {
             let username = this.username;
-            return new Promise(function(resolve, reject) {
-                db.execute('SELECT id, username, email, password FROM users WHERE username = ?', [username], function(err, row) {
+            return new Promise((resolve, reject) => {
+                db.execute('SELECT id, username, email, password FROM users WHERE username = ?', [username], (err, row) => {
                     if (err) reject(err);
                     resolve(row);
                 });
             });
         }
         else {
-            return new Promise(function(resolve, reject) {
-                db.execute('SELECT id, username, email, password FROM users', function(err, rows) {
+            return new Promise((resolve, reject) => {
+                db.execute('SELECT id, username, email, password FROM users', (err, rows) => {
                     if (err) reject(err);
                     resolve(rows);
                 });
@@ -65,15 +65,14 @@ class User {
      * @param {object} values JSON formatted object containing the user values with which to handle a query
      * @memberof User
      */
-    put(values) {
+    patch(values) {
         let username = this.username;
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             if (typeof values === 'object') {
                 let SQLarray = [];
                 for(let key in values) {
                     SQLarray.push(`${key} = '${values[key]}'`);
                 }
-                //SQLarray.shift();
                 db.execute('UPDATE users SET '+SQLarray.toString()+' WHERE username = ?', [username], (err, row) => {
                     if (err) reject(err);
                     resolve(row);
@@ -82,6 +81,16 @@ class User {
             else {
                 reject(new Error('Missing or bad set of values'));
             }
+        });
+    }
+
+    delete() {
+        let username = this.username;
+        return new Promise((resolve, reject) => {
+            db.execute('DELETE FROM users WHERE username = ?', [username], (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
         });
     }
 }
