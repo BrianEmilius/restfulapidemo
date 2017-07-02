@@ -3,8 +3,8 @@ const User = require('../services/users');
 module.exports = function(app) {
     
     app.post('/users', function(req, res, next) {
-        let user = new User(req.params.username, req.params);
-        user.create()
+        let user = new User();
+        user.create(req.params)
             .then(function(result) {
                 req.params.id = result.insertId;
                 res.send(201, req.params);
@@ -17,7 +17,7 @@ module.exports = function(app) {
 
     app.get('/users', function(req, res, next) {
         let user = new User();
-        user.getAll()
+        user.get()
             .then(function(result) {
                 res.send(200, result);
             })
@@ -30,7 +30,7 @@ module.exports = function(app) {
 
     app.get('/users/:username', function(req, res, next) {
         let user = new User(req.params.username);
-        user.getOne()
+        user.get()
             .then(function(result) {
                 res.send(result);
             })
@@ -38,6 +38,10 @@ module.exports = function(app) {
                 res.send(404, {"code": "NotFound", "message": err.message});
             });
         delete user;
+    });
+
+    app.put('/users/:username', function(req, res, next) {
+        let user = new User(req.params.username);
     });
 
 };
