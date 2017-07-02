@@ -7,7 +7,7 @@ module.exports = function(app) {
 		article.create()
 			.then(function(result) {
 				req.params.id = result.insertId;
-                res.send(201, req.params);
+				res.send(201, req.params);
 			})
 			.catch(function(err) {
 				res.send(400, {"code": "BadRequest", "message": err.message});
