@@ -18,7 +18,7 @@ class User {
     
     /**
      * Create a user in the database.
-     * @param {object} values JSON or jsx formatted object containing the user values with which to handle a query
+     * @param {object} values JSON formatted object containing the user values with which to handle a query
      * @memberof User
      */
     post(values) {
@@ -61,15 +61,23 @@ class User {
     }
 
     /**
-     * Update a user in the database
-     * @param {object} values JSON or jsx formatted object containing the user values with which to handle a query
+     * Update a user in the database.
+     * @param {object} values JSON formatted object containing the user values with which to handle a query
      * @memberof User
      */
     put(values) {
         let username = this.username;
         return new Promise(function(resolve, reject) {
             if (typeof values === 'object') {
-                
+                let SQLarray = [];
+                for(let key in values) {
+                    SQLarray.push(`${key} = '${values[key]}'`);
+                }
+                //SQLarray.shift();
+                db.execute('UPDATE users SET '+SQLarray.toString()+' WHERE username = ?', [username], (err, row) => {
+                    if (err) reject(err);
+                    resolve(row);
+                });
             }
             else {
                 reject(new Error('Missing or bad set of values'));
