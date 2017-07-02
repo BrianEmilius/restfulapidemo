@@ -6,8 +6,8 @@ const port = process.env.PORT || 1337;
 
 // SERVER INITIALIZATION
 const app = restify.createServer({
-    name: 'RESTful API Demo',
-    version: '0.0.1'
+	'name': 'RESTful API Demo',
+	'version': '0.0.1'
 });
 
 // CONFIGURATION
@@ -20,11 +20,6 @@ require('./helpers/redirect')(app);
 require('./routes/index')(app);
 
 // LISTEN AND BEGIN
-app.listen(port, function() {
-    console.log('%s is listening on port %s', app.name, port);
+app.listen(port, () => {
+	console.log('%s is listening on port %s', app.name, port);
 });
-
-// GARBAGE COLLECTION
-delete restify;
-delete port;
-delete app;
