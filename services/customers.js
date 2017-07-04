@@ -1,33 +1,33 @@
 const db = require('../config/mysql').connect();
 
 /**
- * Handles users
- * @class User
+ * Handles customers
+ * @class Customer
  */
-class User {
+class Customer {
 	/**
-	 * Creates an instance of User.
-	 * @param {string} [username] the unique username of a user
-	 * @memberof User
+	 * Creates an instance of Customer.
+	 * @param {number} [id] the unique id of a customer
+	 * @memberof Customer
 	 */
-	constructor (username) {
-		if (typeof username === 'string') {
-			this.username = username;
+	constructor (id) {
+		if (typeof id !== 'undefined') {
+			this.id = parseInt(id);
 		}
 	}
 	
 	/**
-	 * Create a user in the database.
+	 * Create a customer in the database.
 	 * @param {object} values JSON formatted object containing
-	 * the user values with which to handle a query
-	 * @memberof User
+	 * the customer values with which to handle a query
+	 * @memberof Customer
 	 */
 	post (values) {
 		return new Promise((resolve, reject) => {
 			if (typeof values === 'object') {
 				this.values = values;
 				db.execute('INSERT INTO users SET username = ?, email = ?, password = ?',
-					[values.username, values.email, values.password], (err, row) => {
+					[values.id, values.email, values.password], (err, row) => {
 						if (err) reject(err);
 						resolve(row);
 					});
@@ -38,37 +38,39 @@ class User {
 	}
 
 	/**
-	 * Get users from the database.
-	 * @memberof User
+	 * Get customers from the database.
+	 * @memberof Customer
 	 */
 	get () {
-		if (typeof this.username === 'string') {
-			const username = this.username;
+		if (typeof this.id === 'number') {
+			const id = this.id;
 			return new Promise((resolve, reject) => {
-				db.execute('SELECT id, username, email, password FROM users WHERE username = ?',
-					[username], (err, row) => {
+				db.execute(`SELECT ID, name, address, \`zip code\`, phone, city, country, 
+				            notes, SID FROM customer_list WHERE ID = ?`,
+					[id], (err, row) => {
 						if (err) reject(err);
 						resolve(row);
 					});
 			});
 		} else {
 			return new Promise((resolve, reject) => {
-				db.execute('SELECT id, username, email, password FROM users', (err, rows) => {
-					if (err) reject(err);
-					resolve(rows);
-				});
+				db.execute(`SELECT ID, name, address, \`zip code\`, phone, city, country,
+				            notes, SID FROM customer_list`, (err, rows) => {
+						if (err) reject(err);
+						resolve(rows);
+					});
 			});
 		}
 	}
 
 	/**
-	 * Update a user in the database.
+	 * Update a customer in the database.
 	 * @param {object} values JSON formatted object containing
-	 * the user values with which to handle a query
-	 * @memberof User
+	 * the customer values with which to handle a query
+	 * @memberof Customer
 	 */
 	patch (values) {
-		const username = this.username;
+		const id = this.id;
 		return new Promise((resolve, reject) => {
 			if (typeof values === 'object') {
 				const SQLarray = [];
@@ -76,7 +78,7 @@ class User {
 					SQLarray.push(`${key} = '${values[key]}'`);
 				}
 				db.execute(`UPDATE users SET ${SQLarray.toString()} WHERE username = ?`,
-					[username], (err, row) => {
+					[id], (err, row) => {
 						if (err) reject(err);
 						resolve(row);
 					});
@@ -87,9 +89,9 @@ class User {
 	}
 
 	delete () {
-		const username = this.username;
+		const id = this.id;
 		return new Promise((resolve, reject) => {
-			db.execute('DELETE FROM users WHERE username = ?', [username], (err, row) => {
+			db.execute('DELETE FROM users WHERE username = ?', [id], (err, row) => {
 				if (err) reject(err);
 				resolve(row);
 			});
@@ -97,4 +99,4 @@ class User {
 	}
 }
 
-module.exports = User;
+module.exports = Customer;

@@ -65,6 +65,6 @@
 		"comma-style":"error",
 		"comma-dangle":"error",
 		"semi":"error",
-		"no-console":"off"
+		"no-console":"warn"
 	}
 }

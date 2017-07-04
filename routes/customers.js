@@ -1,9 +1,9 @@
-const User = require('../services/users');
+const Customer = require('../services/customers');
 
 module.exports = (app) => {
-	app.post('/users', (req, res) => {
-		const user = new User();
-		user.create(req.body)
+	app.post('/customers', (req, res) => {
+		const customer = new Customer();
+		customer.create(req.body)
 			.then((result) => {
 				req.params.id = result.insertId;
 				res.send(201, req.params);
@@ -13,9 +13,9 @@ module.exports = (app) => {
 			});
 	});
 
-	app.get('/users', (req, res) => {
-		const user = new User();
-		user.get()
+	app.get('/customers', (req, res) => {
+		const customer = new Customer();
+		customer.get()
 			.then((result) => {
 				res.send(200, result);
 			})
@@ -24,9 +24,9 @@ module.exports = (app) => {
 			});
 	});
 
-	app.get('/users/:username', (req, res) => {
-		const user = new User(req.params.username);
-		user.get()
+	app.get('/customers/:id', (req, res) => {
+		const customer = new Customer(req.params.id);
+		customer.get()
 			.then((result) => {
 				res.send(200, result);
 			})
@@ -35,9 +35,9 @@ module.exports = (app) => {
 			});
 	});
 
-	app.patch('/users/:username', (req, res) => {
-		const user = new User(req.params.username);
-		user.patch(req.body)
+	app.patch('/customers/:id', (req, res) => {
+		const customer = new Customer(req.params.id);
+		customer.patch(req.body)
 			.then((result) => {
 				res.send(200, result);
 			})
@@ -46,9 +46,9 @@ module.exports = (app) => {
 			});
 	});
 
-	app.del('/users/:username', (req, res) => {
-		const user = new User(req.params.username);
-		user.delete()
+	app.del('/customers/:id', (req, res) => {
+		const customer = new Customer(req.params.id);
+		customer.delete()
 			.then((result) => {
 				res.send(200, result);
 			})

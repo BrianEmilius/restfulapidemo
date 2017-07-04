@@ -5,6 +5,6 @@ module.exports = {
 		mysql.createConnection({
 			'host': 'localhost',
 			'user': 'root',
-			'database': 'api'
+			'database': 'sakila'
 		})
 };
