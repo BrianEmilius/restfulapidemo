@@ -1,7 +1,7 @@
 // DEPENDENCIES
 const restify = require('restify');
 
-// uh, "not" variables?
+// GENERAL SETTINGS STUFF
 const port = process.env.PORT || 1337;
 
 // SERVER INITIALIZATION
@@ -13,13 +13,11 @@ const app = restify.createServer({
 // CONFIGURATION
 require('./config/server')(app);
 
-// HELPERS / MIDDLEWARE
-require('./helpers/redirect')(app);
+// HELPERS / CUSTOM MIDDLEWARE
+require('./helpers/index')(app);
 
 // ROUTES
 require('./routes/index')(app);
 
 // LISTEN AND BEGIN
-app.listen(port, () => {
-	console.log('%s is listening on port %s', app.name, port);
-});
+app.listen(port);

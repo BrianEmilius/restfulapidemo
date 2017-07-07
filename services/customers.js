@@ -95,7 +95,7 @@ class Customer {
 	delete () {
 		const id = this.id;
 		return new Promise((resolve, reject) => {
-			db.execute('DELETE FROM users WHERE username = ?', [id], (err, row) => {
+			db.execute('DELETE FROM customer WHERE ID = ?', [id], (err, row) => {
 				if (err) reject(err);
 				resolve(row);
 			});
