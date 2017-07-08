@@ -101,6 +101,22 @@ class Customer {
 			});
 		});
 	}
+
+	/**
+	 * Get full payment history of a customer
+	 * @memberof Customer
+	 */
+	payments () {
+		const id = this.id;
+		return new Promise((resolve, reject) => {
+			db.execute(`SELECT payment_id, customer_id, staff_id, rental_id, amount, payment_date,
+			            last_update FROM sakila.payment WHERE customer_id = ?`,
+				[id], (err, rows) => {
+					if (err) reject(err);
+					resolve(rows);
+				});
+		});
+	}
 }
 
 module.exports = Customer;

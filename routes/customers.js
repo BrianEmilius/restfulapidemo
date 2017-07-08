@@ -56,4 +56,15 @@ module.exports = (app) => {
 				res.send(400, { 'code': 'BadRequest', 'message': err.message });
 			});
 	});
+
+	app.get('/customers/:id/payments', (req, res) => {
+		const customer = new Customer(req.params.id);
+		customer.payments()
+			.then((result) => {
+				res.send(200, result);
+			})
+			.catch((err) => {
+				res.send(400, { 'code': 'BadRequest', 'message': err.message });
+			});
+	});
 };
