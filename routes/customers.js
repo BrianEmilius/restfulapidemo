@@ -1,6 +1,6 @@
 const Customer = require('../services/customers');
 
-module.exports = (app) => {
+module.exports = (app, passport) => {
 	app.post('/customers', (req, res) => {
 		const customer = new Customer();
 		customer.create(req.body)
@@ -13,7 +13,7 @@ module.exports = (app) => {
 			});
 	});
 
-	app.get('/customers', (req, res) => {
+	app.get('/customers',/* passport.authenticate('local'),*/ (req, res) => {
 		const customer = new Customer();
 		customer.get()
 			.then((result) => {

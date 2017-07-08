@@ -1,5 +1,6 @@
 // DEPENDENCIES
 const restify = require('restify');
+const passport = require('passport');
 
 // GENERAL SETTINGS STUFF
 const port = process.env.PORT || 1337;
@@ -11,13 +12,14 @@ const app = restify.createServer({
 });
 
 // CONFIGURATION
+require('./config/passport')(passport);
 require('./config/server')(app);
 
 // HELPERS / CUSTOM MIDDLEWARE
 require('./helpers/index')(app);
 
 // ROUTES
-require('./routes/index')(app);
+require('./routes/index')(app, passport);
 
 // LISTEN AND BEGIN
 app.listen(port);

@@ -1,5 +1,5 @@
-const restify = require('restify');
-const logger = require('morgan');
+const restify       = require('restify');
+const logger        = require('morgan');
 
 module.exports = (app) => {
 	app.use(logger('dev'));
