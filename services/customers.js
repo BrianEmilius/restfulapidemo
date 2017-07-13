@@ -104,18 +104,32 @@ class Customer {
 
 	/**
 	 * Get full payment history of a customer
+	 * @param {number} [paymentId] - the unique id of a payment
 	 * @memberof Customer
 	 */
-	payments () {
+	payments (paymentId) {
 		const id = this.id;
-		return new Promise((resolve, reject) => {
-			db.execute(`SELECT payment_id, customer_id, staff_id, rental_id, amount, payment_date,
-			            last_update FROM sakila.payment WHERE customer_id = ?`,
-				[id], (err, rows) => {
-					if (err) reject(err);
-					resolve(rows);
-				});
-		});
+		if (typeof paymentId !== 'undefined') {
+			const payId = parseInt(paymentId);
+			return new Promise((resolve, reject) => {
+				db.execute(`SELECT payment_id, customer_id, staff_id, rental_id, amount,
+							payment_date, last_update FROM sakila.payment
+							WHERE customer_id = ? AND payment_id = ?`,
+					[id, payId], (err, rows) => {
+						if (err) reject(err);
+						resolve(rows);
+					});
+			});
+		} else {
+			return new Promise((resolve, reject) => {
+				db.execute(`SELECT payment_id, customer_id, staff_id, rental_id, amount,
+							payment_date, last_update FROM sakila.payment WHERE customer_id = ?`,
+					[id], (err, rows) => {
+						if (err) reject(err);
+						resolve(rows);
+					});
+			});
+		}
 	}
 }
 

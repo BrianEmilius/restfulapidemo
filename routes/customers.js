@@ -1,13 +1,5 @@
 const Customer = require('../services/customers');
 
-const isLoggedIn = function (req, res, next) {
-	if (req.isAuthenticated()) return next();
-	res.send(401, {
-		'code': 'Unauthorized',
-		'message': 'Invalid or no credentials were provided for this resource.'
-	});
-};
-
 module.exports = (app, passport) => {
 	app.post('/customers', (req, res) => {
 		const customer = new Customer();
@@ -32,7 +24,7 @@ module.exports = (app, passport) => {
 			});
 	});
 
-	app.get('/customers/:id', (req, res) => {
+	app.get('/customers/:id', passport.authenticate('basic', { 'session': false }), (req, res) => {
 		const customer = new Customer(req.params.id);
 		customer.get()
 			.then((result) => {
@@ -43,18 +35,19 @@ module.exports = (app, passport) => {
 			});
 	});
 
-	app.patch('/customers/:id', (req, res) => {
-		const customer = new Customer(req.params.id);
-		customer.patch(req.body)
-			.then((result) => {
-				res.send(200, result);
-			})
-			.catch((err) => {
-				res.send(400, { 'code': 'BadRequest', 'message': err.message });
-			});
-	});
+	app.patch('/customers/:id',
+		passport.authenticate('basic', { 'session': false }), (req, res) => {
+			const customer = new Customer(req.params.id);
+			customer.patch(req.body)
+				.then((result) => {
+					res.send(200, result);
+				})
+				.catch((err) => {
+					res.send(400, { 'code': 'BadRequest', 'message': err.message });
+				});
+		});
 
-	app.del('/customers/:id', (req, res) => {
+	app.del('/customers/:id', passport.authenticate('basic', { 'session': false }), (req, res) => {
 		const customer = new Customer(req.params.id);
 		customer.delete()
 			.then((result) => {
@@ -65,14 +58,27 @@ module.exports = (app, passport) => {
 			});
 	});
 
-	app.get('/customers/:id/payments', isLoggedIn, (req, res) => {
-		const customer = new Customer(req.params.id);
-		customer.payments()
-			.then((result) => {
-				res.send(200, result);
-			})
-			.catch((err) => {
-				res.send(400, { 'code': 'BadRequest', 'message': err.message });
-			});
-	});
+	app.get('/customers/:id/payments', passport.authenticate('basic', { 'session': false }),
+		(req, res) => {
+			const customer = new Customer(req.params.id);
+			customer.payments()
+				.then((result) => {
+					res.send(200, result);
+				})
+				.catch((err) => {
+					res.send(400, { 'code': 'BadRequest', 'message': err.message });
+				});
+		});
+
+	app.get('/customers/:id/payments/:paymentId',
+		passport.authenticate('basic', { 'session': false }), (req, res) => {
+			const customer = new Customer(req.params.id);
+			customer.payments(req.params.paymentId)
+				.then((result) => {
+					res.send(200, result);
+				})
+				.catch((err) => {
+					res.send(400, { 'code': 'BadRequest', 'message': err.message });
+				});
+		});
 };
