@@ -12,8 +12,8 @@ const app = restify.createServer({
 });
 
 // CONFIGURATION
-require('./config/passport')(passport);
-require('./config/server')(app);
+require('./config/passport')(app, passport);
+require('./config/server')(app, passport);
 
 // HELPERS / CUSTOM MIDDLEWARE
 require('./helpers/index')(app);

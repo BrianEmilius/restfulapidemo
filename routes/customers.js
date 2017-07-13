@@ -1,5 +1,13 @@
 const Customer = require('../services/customers');
 
+const isLoggedIn = function (req, res, next) {
+	if (req.isAuthenticated()) return next();
+	res.send(401, {
+		'code': 'Unauthorized',
+		'message': 'Invalid or no credentials were provided for this resource.'
+	});
+};
+
 module.exports = (app, passport) => {
 	app.post('/customers', (req, res) => {
 		const customer = new Customer();
@@ -13,7 +21,7 @@ module.exports = (app, passport) => {
 			});
 	});
 
-	app.get('/customers',/* passport.authenticate('local'),*/ (req, res) => {
+	app.get('/customers', passport.authenticate('basic', { 'session': false }), (req, res) => {
 		const customer = new Customer();
 		customer.get()
 			.then((result) => {
@@ -57,7 +65,7 @@ module.exports = (app, passport) => {
 			});
 	});
 
-	app.get('/customers/:id/payments', (req, res) => {
+	app.get('/customers/:id/payments', isLoggedIn, (req, res) => {
 		const customer = new Customer(req.params.id);
 		customer.payments()
 			.then((result) => {
