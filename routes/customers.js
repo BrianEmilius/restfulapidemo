@@ -1,7 +1,7 @@
 const Customer = require('../services/customers');
 
 module.exports = (app, passport) => {
-	app.post('/customers', (req, res) => {
+	app.post('/customers', passport.authenticate('basic', { 'session': false }), (req, res) => {
 		const customer = new Customer();
 		customer.create(req.body)
 			.then((result) => {
